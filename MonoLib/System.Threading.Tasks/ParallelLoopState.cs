@@ -26,6 +26,10 @@
 using System;
 using System.Threading;
 
+#if INSIDE_MONO_PARALLEL
+using Mono.Threading;
+#endif
+
 namespace System.Threading.Tasks
 {
 	[System.Diagnostics.DebuggerDisplayAttribute ("ShouldExitCurrentIteration = {ShouldExitCurrentIteration}")]

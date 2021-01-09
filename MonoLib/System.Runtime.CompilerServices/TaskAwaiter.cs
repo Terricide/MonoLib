@@ -1,4 +1,4 @@
-//
+﻿//
 // TaskAwaiter.cs
 //
 // Authors:
@@ -37,28 +37,84 @@ namespace System.Runtime.CompilerServices
 {
 	public struct TaskAwaiter : ICriticalNotifyCompletion
 	{
-		readonly Task task;
+		readonly Task m_task;
 
 		internal TaskAwaiter (Task task)
 		{
-			this.task = task;
+			this.m_task = task;
 		}
 
 		public bool IsCompleted {
 			get {
-				return task.IsCompleted;
+				return m_task.IsCompleted;
 			}
 		}
 
-		public void GetResult ()
-		{
-			if (task.Status != TaskStatus.RanToCompletion) {
-				// Merge current and dispatched stack traces if there is any
-				ExceptionDispatchInfo.Capture (HandleUnexpectedTaskResult (task)).Throw ();
-			}
-		}
+        /// <summary>Ends the await on the completed <see cref="System.Threading.Tasks.Task"/>.</summary>
+        /// <exception cref="System.NullReferenceException">The awaiter was not properly initialized.</exception>
+        /// <exception cref="System.Threading.Tasks.TaskCanceledException">The task was canceled.</exception>
+        /// <exception cref="System.Exception">The task completed in a Faulted state.</exception>
+        public void GetResult()
+        {
+            ValidateEnd(m_task);
+        }
 
-		internal static Exception HandleUnexpectedTaskResult (Task task)
+        /// <summary>
+        /// Fast checks for the end of an await operation to determine whether more needs to be done
+        /// prior to completing the await.
+        /// </summary>
+        /// <param name="task">The awaited task.</param>
+        internal static void ValidateEnd(Task task)
+        {
+            HandleNonSuccessAndDebuggerNotification(task);
+        }
+
+        /// <summary>
+        /// Ensures the task is completed, triggers any necessary debugger breakpoints for completing 
+        /// the await on the task, and throws an exception if the task did not complete successfully.
+        /// </summary>
+        /// <param name="task">The awaited task.</param>
+        private static void HandleNonSuccessAndDebuggerNotification(Task task)
+        {
+            // NOTE: The JIT refuses to inline ValidateEnd when it contains the contents
+            // of HandleNonSuccessAndDebuggerNotification, hence the separation.
+
+            // Synchronously wait for the task to complete.  When used by the compiler,
+            // the task will already be complete.  This code exists only for direct GetResult use,
+            // for cases where the same exception propagation semantics used by "await" are desired,
+            // but where for one reason or another synchronous rather than asynchronous waiting is needed.
+            if (!task.IsCompleted)
+            {
+                bool taskCompleted = task.Wait(Timeout.Infinite, default(CancellationToken));
+                Contract.Assert(taskCompleted, "With an infinite timeout, the task should have always completed.");
+            }
+
+            // And throw an exception if the task is faulted or canceled.
+            if (!task.IsRanToCompletion) ThrowForNonSuccess(task);
+        }
+
+        /// <summary>Throws an exception to handle a task that completed in a state other than RanToCompletion.</summary>
+        private static void ThrowForNonSuccess(Task task)
+        {
+            throw new Exception("Task must have been completed by now.");
+        }
+
+        //      public void GetResult ()
+        //{
+        //          if (m_task.Status == TaskStatus.WaitingForActivation || m_task.Status == TaskStatus.)
+
+        //          if (!m_task.IsCompleted)
+        //          {
+        //              m_task.Wait(Timeout.Infinite, default(CancellationToken));
+        //          }
+
+        //          if (m_task.Status != TaskStatus.RanToCompletion) {
+        //		// Merge current and dispatched stack traces if there is any
+        //		ExceptionDispatchInfo.Capture (HandleUnexpectedTaskResult (m_task)).Throw ();
+        //	}
+        //}
+
+        internal static Exception HandleUnexpectedTaskResult (Task task)
 		{
 			switch (task.Status) {
 			case TaskStatus.Canceled:
@@ -70,12 +126,12 @@ namespace System.Runtime.CompilerServices
 			}
 		}
 
-		internal static void HandleOnCompleted (Task task, Action continuation, bool continueOnSourceContext, bool manageContext)
+        internal static void HandleOnCompleted (Task task, Action continuation, bool continueOnSourceContext, bool manageContext)
 		{
 			if (continueOnSourceContext && SynchronizationContext.Current != null) {
 				task.ContinueWith (new SynchronizationContextContinuation (continuation, SynchronizationContext.Current));
 			} else {
-				task.ContinueWith (new ActionContinuation (continuation));
+				task.ContinueWith (new AwaiterActionContinuation(continuation));
 			}
 		}
 
@@ -84,7 +140,7 @@ namespace System.Runtime.CompilerServices
 			if (continuation == null)
 				throw new ArgumentNullException ("continuation");
 
-			HandleOnCompleted (task, continuation, true, true);
+			HandleOnCompleted (m_task, continuation, true, true);
 		}
 		
 		public void UnsafeOnCompleted (Action continuation)
@@ -92,7 +148,7 @@ namespace System.Runtime.CompilerServices
 			if (continuation == null)
 				throw new ArgumentNullException ("continuation");
 
-			HandleOnCompleted (task, continuation, true, false);
+			HandleOnCompleted (m_task, continuation, true, false);
 		}
 	}
 }

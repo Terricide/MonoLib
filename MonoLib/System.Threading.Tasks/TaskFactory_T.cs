@@ -28,6 +28,10 @@
 
 #if NET_4_0
 
+#if INSIDE_MONO_PARALLEL
+using Mono.Threading;
+#endif
+
 namespace System.Threading.Tasks
 {
 	public class TaskFactory<TResult>

@@ -28,6 +28,10 @@
 using System;
 using System.Threading;
 
+#if INSIDE_MONO_PARALLEL
+using Mono.Threading.Tasks;
+#endif
+
 namespace System.Threading.Tasks
 {
 

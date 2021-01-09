@@ -31,6 +31,10 @@
 
 using System.Collections.Generic;
 
+#if INSIDE_MONO_PARALLEL
+using Mono.Threading;
+#endif
+
 namespace System.Threading.Tasks
 {
 	interface IContinuation
@@ -104,24 +108,47 @@ namespace System.Threading.Tasks
 				return;
 
 			if ((continuationOptions & TaskContinuationOptions.ExecuteSynchronously) != 0)
-				task.RunSynchronouslyCore (task.scheduler);
+				task.RunSynchronouslyCore (task.scheduler, false);
 			else
-				task.Schedule ();
+				task.Schedule (false);
 		}
 	}
 
-	class ActionContinuation : IContinuation
+	class AwaiterActionContinuation : IContinuation
 	{
 		readonly Action action;
 
-		public ActionContinuation (Action action)
+		public AwaiterActionContinuation (Action action)
 		{
 			this.action = action;
 		}
 
 		public void Execute ()
 		{
-			action ();
+			//
+			// Continuation can be inlined only when the current context allows it. This is different to awaiter setup
+			// because the context where the awaiter task is set to completed can be anywhere (due to TaskCompletionSource)
+			//
+			if ((SynchronizationContext.Current == null || SynchronizationContext.Current.GetType () == typeof (SynchronizationContext)) && TaskScheduler.IsDefault) {
+				action ();
+			} else {
+				ThreadPool.UnsafeQueueUserWorkItem (l => ((Action) l) (), action);
+			}
+		}
+	}
+
+	class SchedulerAwaitContinuation : IContinuation
+	{
+		readonly Task task;
+
+		public SchedulerAwaitContinuation (Task task)
+		{
+			this.task = task;
+		}
+
+		public void Execute ()
+		{
+			task.RunSynchronouslyCore (task.scheduler, true);
 		}
 	}
 
@@ -138,7 +165,11 @@ namespace System.Threading.Tasks
 
 		public void Execute ()
 		{
-			ctx.Post (l => ((Action) l) (), action);
+			// No context switch when we are on correct context
+			if (ctx == SynchronizationContext.Current)
+				action ();
+			else
+				ctx.Post (l => ((Action) l) (), action);
 		}
 	}
 
@@ -179,7 +210,7 @@ namespace System.Threading.Tasks
 			}
 
 			if (exceptions != null) {
-				owner.TrySetException (new AggregateException (exceptions));
+				owner.TrySetException (new AggregateException (exceptions), false, false);
 				return;
 			}
 
@@ -239,7 +270,7 @@ namespace System.Threading.Tasks
 			}
 
 			if (exceptions != null) {
-				owner.TrySetException (new AggregateException (exceptions));
+				owner.TrySetException (new AggregateException (exceptions), false, false);
 				return;
 			}
 
@@ -316,6 +347,7 @@ namespace System.Threading.Tasks
 	sealed class CountdownContinuation : IContinuation, IDisposable
 	{
 		readonly CountdownEvent evt;
+		bool disposed;
 
 		public CountdownContinuation (int initialCount)
 		{
@@ -330,12 +362,33 @@ namespace System.Threading.Tasks
 
 		public void Dispose ()
 		{
+			disposed = true;
+			Thread.MemoryBarrier ();
+	
 			evt.Dispose ();
 		}
 
 		public void Execute ()
 		{
-			evt.Signal ();
+			// Guard against possible race when continuation is disposed and some tasks may still
+			// execute it (removal was late and the execution is slower than the Dispose thread)
+			if (!disposed)
+				evt.Signal ();
+		}
+	}
+
+	sealed class DisposeContinuation : IContinuation
+	{
+		readonly IDisposable instance;
+
+		public DisposeContinuation (IDisposable instance)
+		{
+			this.instance = instance;
+		}
+
+		public void Execute ()
+		{
+			instance.Dispose ();
 		}
 	}
 }

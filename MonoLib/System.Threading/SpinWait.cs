@@ -42,10 +42,10 @@ namespace System.Threading
 
 			if (isSingleCpu) {
 				// On a single-CPU system, spinning does no good
-				Thread.Sleep (0);
+				ThreadEx.Yield ();
 			} else {
 				if (ntime % step == 0)
-					Thread.Sleep (0);
+                    ThreadEx.Yield();
 				else
 					// Multi-CPU system might be hyper-threaded, let other thread run
 					Thread.SpinWait (Math.Min (ntime, maxTime) << 1);

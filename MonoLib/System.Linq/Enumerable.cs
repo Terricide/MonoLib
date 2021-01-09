@@ -3070,21 +3070,21 @@ namespace System.Linq
 			}
 		}
 
-		#endregion
-		
+        #endregion
+
 #if NET_4_0
-		#region Zip
-		
-		public static IEnumerable<TResult> Zip<TFirst, TSecond, TResult> (this IEnumerable<TFirst> first, IEnumerable<TSecond> second, Func<TFirst, TSecond, TResult> resultSelector)
-		{
-			Check.FirstAndSecond (first, second);
-			if (resultSelector == null)
-				throw new ArgumentNullException ("resultSelector");
-				
-			return CreateZipIterator (first, second, resultSelector);
-		}
-		
-		static IEnumerable<TResult> CreateZipIterator<TFirst, TSecond, TResult> (IEnumerable<TFirst> first, IEnumerable<TSecond> second, Func<TFirst, TSecond, TResult> selector)
+        #region Zip
+
+        //public static IEnumerable<TResult> Zip<TFirst, TSecond, TResult>(this IEnumerable<TFirst> first, IEnumerable<TSecond> second, Func<TFirst, TSecond, TResult> resultSelector)
+        //{
+        //    Check.FirstAndSecond(first, second);
+        //    if (resultSelector == null)
+        //        throw new ArgumentNullException("resultSelector");
+
+        //    return CreateZipIterator(first, second, resultSelector);
+        //}
+
+        static IEnumerable<TResult> CreateZipIterator<TFirst, TSecond, TResult> (IEnumerable<TFirst> first, IEnumerable<TSecond> second, Func<TFirst, TSecond, TResult> selector)
 		{
 			using (IEnumerator<TFirst> first_enumerator = first.GetEnumerator ()) {
 				using (IEnumerator<TSecond> second_enumerator = second.GetEnumerator ()) {

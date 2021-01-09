@@ -187,7 +187,7 @@ namespace System.Threading.Tasks
 						range.V64.Actual = ++i;
 					}
 
-					bool sixtyfour = false;//Environment.Is64BitProcess;
+					 bool sixtyfour = EnvironmentEx.Is64BitProcess;
 					
 					// Try toExclusive steal fromInclusive our right neighbor (cyclic)
 					int len = num + localWorker;
@@ -203,7 +203,7 @@ namespace System.Threading.Tasks
 								long old;
 								StealValue64 val = new StealValue64 ();
 
-								old = sixtyfour ? range.V64.Value : Interlocked.CompareExchange (ref range.V64.Value, 0, 0);
+								old = Thread.VolatileRead (ref range.V64.Value);
 								val.Value = old;
 
 								if (val.Actual >= stopIndex - val.Stolen - 2)

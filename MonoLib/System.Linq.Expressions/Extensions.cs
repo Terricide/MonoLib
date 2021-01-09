@@ -44,6 +44,14 @@ namespace System.Linq.Expressions {
 			return self.GetGenericTypeDefinition () == type;
 		}
 
+        public static bool IsGenericImplementationOf(this Type self, Type type)
+        {
+            foreach (Type iface in self.GetInterfaces())
+                if (iface.IsGenericInstanceOf(type))
+                    return true;
+            return false;
+        }
+
 		public static bool IsNullable (this Type self)
 		{
 			return self.IsValueType && self.IsGenericInstanceOf (typeof (Nullable<>));

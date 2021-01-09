@@ -45,7 +45,7 @@ namespace System.Collections.Generic {
 	[DebuggerTypeProxy (typeof (CollectionDebuggerView<,>))]
 	public class HashSet<T> : ICollection<T>, ISerializable, IDeserializationCallback
 #if NET_4_0
-							, ISet<T>
+							//, ISet<T>
 #endif
 	{
 		const int INITIAL_SIZE = 10;

@@ -54,11 +54,9 @@ namespace System.Threading
 			}
 		}
 		
-
-
 		static long TicksNow ()
 		{
-			return DateTime.UtcNow.Ticks;
+			return DateTime.Now.Ticks;
 		}
 	}
 }

@@ -29,7 +29,7 @@ using System.Runtime.Serialization;
 namespace System.Threading.Tasks
 {
 	[Serializable]
-	public class TaskCanceledException : OperationCanceledException
+	public class TaskCanceledException : OperationCanceledException2
 	{
 		Task task;
 		

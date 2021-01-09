@@ -1,4 +1,4 @@
-//
+﻿//
 // TaskAwaiter_T.cs
 //
 // Authors:
@@ -51,7 +51,12 @@ namespace System.Runtime.CompilerServices
 
 		public TResult GetResult ()
 		{
-			if (task.Status != TaskStatus.RanToCompletion)
+            if (!task.IsCompleted)
+            {
+                var taskCompleted = task.Wait(Threading.Timeout.Infinite, default(Threading.CancellationToken));
+            }
+
+            if (task.Status != TaskStatus.RanToCompletion)
 				ExceptionDispatchInfo.Capture (TaskAwaiter.HandleUnexpectedTaskResult (task)).Throw ();
 
 			return task.Result;

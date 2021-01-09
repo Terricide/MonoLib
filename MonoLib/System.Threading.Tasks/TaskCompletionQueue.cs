@@ -33,6 +33,10 @@ using System.Threading;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 
+#if INSIDE_MONO_PARALLEL
+using Mono.Collections.Concurrent;
+#endif
+
 namespace System.Threading.Tasks
 {
 	internal struct TaskCompletionQueue<TCompletion> where TCompletion : class

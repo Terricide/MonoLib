@@ -1,6 +1,11 @@
+//
 // AggregateException.cs
 //
+// Authors:
+//   Marek Safar (marek.safar@gmail.com)
+//
 // Copyright (c) 2008 Jérémie "Garuma" Laval
+// Copyright (C) 2013 Xamarin Inc (http://www.xamarin.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -30,13 +35,12 @@ using System.Runtime.Serialization;
 
 namespace System
 {
-
 	[System.SerializableAttribute]
 	[System.Diagnostics.DebuggerDisplay ("Count = {InnerExceptions.Count}")]
 	public class AggregateException : Exception
 	{
 		List<Exception> innerExceptions = new List<Exception> ();
-		const string defaultMessage = "One or more errors occured";
+		const string defaultMessage = "One or more errors occurred";
 		
 		public AggregateException () : base (defaultMessage)
 		{
@@ -59,7 +63,7 @@ namespace System
 		}
 		
 		public AggregateException (params Exception[] innerExceptions)
-			: this (string.Empty, innerExceptions)
+			: this (defaultMessage, innerExceptions)
 		{
 		}
 		
@@ -103,15 +107,15 @@ namespace System
 		
 		public void Handle (Func<Exception, bool> predicate)
 		{
+			if (predicate == null)
+				throw new ArgumentNullException ("predicate");
+
 			List<Exception> failed = new List<Exception> ();
 			foreach (var e in innerExceptions) {
-				try {
-					if (!predicate (e))
-						failed.Add (e);
-				} catch {
-					throw new AggregateException (failed);
-				}
+				if (!predicate (e))
+					failed.Add (e);
 			}
+
 			if (failed.Count > 0)
 				throw new AggregateException (failed);
 		}
@@ -159,9 +163,18 @@ namespace System
 
 		public override Exception GetBaseException ()
 		{
-			if (innerExceptions == null || innerExceptions.Count == 0)
-				return this;
-			return innerExceptions[0].GetBaseException ();
+			Exception inner = this;
+			for (var ae = this; ae.innerExceptions.Count == 1;) {
+				inner = ae.InnerExceptions [0];
+
+				var aei = inner as AggregateException;
+				if (aei == null)
+					break;
+
+				ae = aei;
+			}
+
+			return inner;
 		}
 	}
 }

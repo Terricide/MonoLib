@@ -85,8 +85,8 @@ namespace System.Threading
 
 		public void ThrowIfCancellationRequested ()
 		{
-			if (Source.IsCancellationRequested)
-				throw new OperationCanceledExceptionExt (this);
+			if (source != null && source.IsCancellationRequested)
+				throw new OperationCanceledException2 (this);
 		}
 
 		public bool Equals (CancellationToken other)

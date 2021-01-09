@@ -18,16 +18,20 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG; NET_2_0; NET_4_0; NET_4_5</DefineConstants>
+    <DefineConstants>DEBUG;NET_2_0; NET_4_0; NET_4_5;DOTNET35;FEATURE_CORECLR;CDS_COMPILE_JUST_THIS</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE; NET_2_0; NET_4_0; NET_4_5</DefineConstants>
+    <OutputPath>..\Builds\</OutputPath>
+    <DefineConstants>TRACE; NET_2_0; NET_4_0; NET_4_5;DOTNET35;FEATURE_CORECLR;CDS_COMPILE_JUST_THIS;NET20;NETFULL</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
@@ -42,25 +46,126 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\..\VersionInfo.cs">
+      <Link>Properties\VersionInfo.cs</Link>
+    </Compile>
     <Compile Include="Async\Extensions.cs" />
     <Compile Include="Delegates.cs" />
     <Compile Include="ExtensionMethods.cs" />
+    <Compile Include="FriendAccessAllowed.cs" />
+    <Compile Include="Microsoft.Extensions.Logging.Abstractions\NullLogger.cs" />
+    <Compile Include="Microsoft.Extensions.Logging.Abstractions\NullLoggerFactory.cs" />
+    <Compile Include="Microsoft.Extensions.Logging.Abstractions\NullScope.cs" />
+    <Compile Include="Microsoft.Extensions.Logging\EventId.cs" />
+    <Compile Include="Microsoft.Extensions.Logging\ILogger.cs" />
+    <Compile Include="Microsoft.Extensions.Logging\ILoggerFactory.cs" />
+    <Compile Include="Microsoft.Extensions.Logging\ILoggerOfT.cs" />
+    <Compile Include="Microsoft.Extensions.Logging\ILoggerProvider.cs" />
+    <Compile Include="Microsoft.Extensions.Logging\Internal\FormattedLogValues.cs" />
+    <Compile Include="Microsoft.Extensions.Logging\Internal\LogValuesFormatter.cs" />
+    <Compile Include="Microsoft.Extensions.Logging\Internal\TypeNameHelper.cs" />
+    <Compile Include="Microsoft.Extensions.Logging\LoggerExtensions.cs" />
+    <Compile Include="Microsoft.Extensions.Logging\LoggerFactoryExtensions.cs" />
+    <Compile Include="Microsoft.Extensions.Logging\LoggerOfT.cs" />
+    <Compile Include="Microsoft.Extensions.Logging\LogLevel.cs" />
+    <Compile Include="Microsoft.Win32\SafeHandles\SafeLocalAllocHandle.cs" />
+    <Compile Include="Microsoft.Win32\Win32Native.cs" />
     <Compile Include="MonoTODO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="System.Collections.Concurent.Partitioners\EnumerablePartitioner.cs" />
-    <Compile Include="System.Collections.Concurent.Partitioners\ListPartitioner.cs" />
-    <Compile Include="System.Collections.Concurent.Partitioners\UserRangePartitioner.cs" />
-    <Compile Include="System.Collections.Concurent\ConcurrentDictionary.cs" />
-    <Compile Include="System.Collections.Concurent\ConcurrentOrderedList.cs" />
-    <Compile Include="System.Collections.Concurent\ConcurrentQueue.cs" />
-    <Compile Include="System.Collections.Concurent\ConcurrentStack.cs" />
-    <Compile Include="System.Collections.Concurent\EnumerablePartitionerOptions.cs" />
-    <Compile Include="System.Collections.Concurent\IProducerConsumerCollection.cs" />
-    <Compile Include="System.Collections.Concurent\OrderablePartitioner.cs" />
-    <Compile Include="System.Collections.Concurent\Partitioner.cs" />
-    <Compile Include="System.Collections.Concurent\SplitOrderedList.cs" />
-    <Compile Include="System.Collections.Generic\HashSet.cs" />
-    <Compile Include="System.Collections\HashPrimeNumbers.cs" />
+    <Compile Include="PureAttribute.cs" />
+    <Compile Include="ReferenceSources\Array_ReferenceSources.cs" />
+    <Compile Include="SR.cs" />
+    <Compile Include="System.Buffers\ArrayPool.cs" />
+    <Compile Include="System.Buffers\ConfigurableArrayPool.cs" />
+    <Compile Include="System.ComponentModel.DataAnnotations\DataType.cs" />
+    <Compile Include="System.ComponentModel.DataAnnotations\DataTypeAttribute.cs" />
+    <Compile Include="System.ComponentModel.DataAnnotations\DisplayAttribute.cs" />
+    <Compile Include="System.ComponentModel.DataAnnotations\DisplayFormatAttribute.cs" />
+    <Compile Include="System.ComponentModel.DataAnnotations\EmailAddressAttribute.cs" />
+    <Compile Include="System.ComponentModel.DataAnnotations\LocalizedString.cs" />
+    <Compile Include="System.ComponentModel.DataAnnotations\RangeAttribute.cs" />
+    <Compile Include="System.ComponentModel.DataAnnotations\RequiredAttribute.cs" />
+    <Compile Include="System.ComponentModel.DataAnnotations\ValidationAttribute.cs" />
+    <Compile Include="System.ComponentModel.DataAnnotations\ValidationAttributeStore.cs" />
+    <Compile Include="System.ComponentModel.DataAnnotations\ValidationContext.cs" />
+    <Compile Include="System.ComponentModel.DataAnnotations\ValidationException.cs" />
+    <Compile Include="System.ComponentModel.DataAnnotations\ValidationResult.cs" />
+    <Compile Include="System.Diagnostics.Tracing\EventAttribute.cs" />
+    <Compile Include="System.Diagnostics.Tracing\EventData.cs" />
+    <Compile Include="System.Diagnostics.Tracing\EventKeywords.cs" />
+    <Compile Include="System.Diagnostics.Tracing\EventLevel.cs" />
+    <Compile Include="System.Diagnostics.Tracing\EventSource.cs" />
+    <Compile Include="System.Diagnostics.Tracing\EventSourceAttribute.cs" />
+    <Compile Include="System.Diagnostics.Tracing\EventSourceSettings.cs" />
+    <Compile Include="System.Diagnostics.Tracing\NonEventAttribute.cs" />
+    <Compile Include="System.IO\AuditRule.cs" />
+    <Compile Include="System.IO\BufferReadWrite.cs" />
+    <Compile Include="System.IO\BufferWithLocks.cs" />
+    <Compile Include="System.IO\CircularBuffer.cs" />
+    <Compile Include="System.IO\DecimalEx.cs" />
+    <Compile Include="System.IO\FastStructure.cs" />
+    <Compile Include="System.IO\MarshalEx.cs" />
+    <Compile Include="System.IO\MemoryMappedFile.cs" />
+    <Compile Include="System.IO\MemoryMappedFileAccess.cs" />
+    <Compile Include="System.IO\MemoryMappedFileRights.cs" />
+    <Compile Include="System.IO\MemoryMappedFileSecurity.cs" />
+    <Compile Include="System.IO\MemoryMappedView.cs" />
+    <Compile Include="System.IO\MemoryMappedViewAccessor.cs" />
+    <Compile Include="System.IO\MemoryMappedViewStream.cs" />
+    <Compile Include="System.IO\ObjectSecurity.cs" />
+    <Compile Include="System.IO\PureAttribute.cs" />
+    <Compile Include="System.IO\SafeMemoryMappedFileHandle.cs" />
+    <Compile Include="System.IO\SafeMemoryMappedViewHandle.cs" />
+    <Compile Include="System.IO\SharedArray.cs" />
+    <Compile Include="System.IO\SharedBuffer.cs" />
+    <Compile Include="System.IO\SharedHeader.cs" />
+    <Compile Include="System.IO\UnmanagedMemoryAccessor.cs" />
+    <Compile Include="System.IO\UnmanagedMemoryStreamEx.cs" />
+    <Compile Include="System.IO\UnsafeNativeMethods.cs" />
+    <Compile Include="System.IO\Utilities\ArraySlice.cs" />
+    <Compile Include="System.IO\Utilities\ExpandingArray.cs" />
+    <Compile Include="System.IO\__Error.cs" />
+    <Compile Include="System.Net.Http\HttpClient.cs" />
+    <Compile Include="System.Net.Http\HttpContent.cs" />
+    <Compile Include="System.Net.Http\HttpRequestException.cs" />
+    <Compile Include="System.Net.Http\HttpResponseMessage.cs" />
+    <Compile Include="System.Net.Http\StringContent.cs" />
+    <Compile Include="System.Net\UdpReceiveResult.cs" />
+    <Compile Include="System.Reflection.Emit\TypeBuilderExtensions.cs" />
+    <Compile Include="System.Reflection\IReflectableType.cs" />
+    <Compile Include="System.Runtime.CompilerServices\MethodImplOptionsEx.cs" />
+    <Compile Include="System.Runtime.InteropServices\Architecture.cs" />
+    <Compile Include="System.Runtime.InteropServices\OSPlatform.cs" />
+    <Compile Include="System.Runtime.InteropServices\RuntimeInformation.cs" />
+    <Compile Include="System.Runtime.InteropServices\SafeBuffer.cs" />
+    <Compile Include="System.Security.Cryptography\AesManaged.cs" />
+    <Compile Include="System.Security.Cryptography\Extensions.cs" />
+    <Compile Include="System.Security.Cryptography\HashAlgorithmName.cs" />
+    <Compile Include="System.Threading\CompareExchangeEnumImpl.cs" />
+    <Compile Include="System.Threading\Contract.cs" />
+    <Compile Include="System.Threading\DebuggerEx.cs" />
+    <Compile Include="System.Threading\InterlockedEx.cs" />
+    <Compile Include="System.Threading\PlatformHelper.cs" />
+    <Compile Include="System.Collections.Concurrent.Partitioners\EnumerablePartitioner.cs" />
+    <Compile Include="System.Collections.Concurrent.Partitioners\ListPartitioner.cs" />
+    <Compile Include="System.Collections.Concurrent.Partitioners\UserRangePartitioner.cs" />
+    <Compile Include="System.Collections.Concurrent\BlockingCollection.cs" />
+    <Compile Include="System.Collections.Concurrent\ConcurrentBag.cs" />
+    <Compile Include="System.Collections.Concurrent\ConcurrentDictionary.cs" />
+    <Compile Include="System.Collections.Concurrent\ConcurrentOrderedList.cs" />
+    <Compile Include="System.Collections.Concurrent\ConcurrentQueue.cs" />
+    <Compile Include="System.Collections.Concurrent\ConcurrentSkipList.cs" />
+    <Compile Include="System.Collections.Concurrent\ConcurrentStack.cs" />
+    <Compile Include="System.Collections.Concurrent\EnumerablePartitionerOptions.cs" />
+    <Compile Include="System.Collections.Concurrent\IProducerConsumerCollection.cs" />
+    <Compile Include="System.Collections.Concurrent\OrderablePartitioner.cs" />
+    <Compile Include="System.Collections.Concurrent\Partitioner.cs" />
+    <Compile Include="System.Collections.Concurrent\SplitOrderedList.cs" />
+    <Compile Include="System.Collections.Generic\CollectionDebuggerView.cs" />
+    <Compile Include="System.Collections.Generic\IReadOnlyCollection.cs" />
+    <Compile Include="System.Collections.Generic\IReadOnlyDictionary.cs" />
+    <Compile Include="System.Collections.Generic\IReadOnlyList.cs" />
+    <Compile Include="System.Collections.ObjectModel\ReadOnlyDictionary.cs" />
     <Compile Include="System.Collections\IStructuralComparable.cs" />
     <Compile Include="System.Collections\IStructuralEquatable.cs" />
     <Compile Include="System.Linq.Expressions\BinaryExpression.cs" />
@@ -91,19 +196,101 @@
     <Compile Include="System.Linq.Expressions\ParameterExpression.cs" />
     <Compile Include="System.Linq.Expressions\TypeBinaryExpression.cs" />
     <Compile Include="System.Linq.Expressions\UnaryExpression.cs" />
+    <Compile Include="System.Linq.Parallel.QueryNodes\QueryBaseNode.cs" />
+    <Compile Include="System.Linq.Parallel.QueryNodes\QueryCastNode.cs" />
+    <Compile Include="System.Linq.Parallel.QueryNodes\QueryChildNode.cs" />
+    <Compile Include="System.Linq.Parallel.QueryNodes\QueryConcatNode.cs" />
+    <Compile Include="System.Linq.Parallel.QueryNodes\QueryDefaultEmptyNode.cs" />
+    <Compile Include="System.Linq.Parallel.QueryNodes\QueryGroupByNode.cs" />
+    <Compile Include="System.Linq.Parallel.QueryNodes\QueryHeadWorkerNode.cs" />
+    <Compile Include="System.Linq.Parallel.QueryNodes\QueryJoinNode.cs" />
+    <Compile Include="System.Linq.Parallel.QueryNodes\QueryMuxNode.cs" />
+    <Compile Include="System.Linq.Parallel.QueryNodes\QueryOptionNode.cs" />
+    <Compile Include="System.Linq.Parallel.QueryNodes\QueryOrderByNode.cs" />
+    <Compile Include="System.Linq.Parallel.QueryNodes\QueryOrderedStreamNode.cs" />
+    <Compile Include="System.Linq.Parallel.QueryNodes\QueryOrderGuardNode.cs" />
+    <Compile Include="System.Linq.Parallel.QueryNodes\QueryReverseNode.cs" />
+    <Compile Include="System.Linq.Parallel.QueryNodes\QuerySelectManyNode.cs" />
+    <Compile Include="System.Linq.Parallel.QueryNodes\QuerySelectNode.cs" />
+    <Compile Include="System.Linq.Parallel.QueryNodes\QuerySetNode.cs" />
+    <Compile Include="System.Linq.Parallel.QueryNodes\QueryStartNode.cs" />
+    <Compile Include="System.Linq.Parallel.QueryNodes\QueryStreamNode.cs" />
+    <Compile Include="System.Linq.Parallel.QueryNodes\QueryWhereNode.cs" />
+    <Compile Include="System.Linq.Parallel.QueryNodes\QueryZipNode.cs" />
+    <Compile Include="System.Linq.Parallel.QueryNodes\SetInclusion.cs" />
+    <Compile Include="System.Linq.Parallel.QueryNodes\WrapHelper.cs" />
+    <Compile Include="System.Linq.Parallel\AggregationList.cs" />
+    <Compile Include="System.Linq.Parallel\ConcurrentGrouping.cs" />
+    <Compile Include="System.Linq.Parallel\ConcurrentLookup.cs" />
+    <Compile Include="System.Linq.Parallel\INodeVisitor.cs" />
+    <Compile Include="System.Linq.Parallel\IVisitableNode.cs" />
+    <Compile Include="System.Linq.Parallel\OrderingEnumerator.cs" />
+    <Compile Include="System.Linq.Parallel\ParallelExecuter.cs" />
+    <Compile Include="System.Linq.Parallel\ParallelPartitioner.cs" />
+    <Compile Include="System.Linq.Parallel\ParallelQueryEnumerator.cs" />
+    <Compile Include="System.Linq.Parallel\ParallelQuickSort.cs" />
+    <Compile Include="System.Linq.Parallel\QueryCheckerVisitor.cs" />
+    <Compile Include="System.Linq.Parallel\QueryIsOrderedVisitor.cs" />
+    <Compile Include="System.Linq.Parallel\QueryOptions.cs" />
+    <Compile Include="System.Linq.Parallel\RangeList.cs" />
+    <Compile Include="System.Linq.Parallel\RepeatList.cs" />
+    <Compile Include="System.Linq.Parallel\ReverseList.cs" />
+    <Compile Include="System.Linq.Parallel\StripPartitioner.cs" />
+    <Compile Include="System.Linq.Parallel\TemporaryArea.cs" />
     <Compile Include="System.Linq\Check.cs" />
     <Compile Include="System.Linq\Enumerable.cs" />
+    <Compile Include="System.Linq\EnumerableEx.cs" />
     <Compile Include="System.Linq\Grouping.cs" />
     <Compile Include="System.Linq\IGrouping.cs" />
     <Compile Include="System.Linq\ILookup_T.cs" />
     <Compile Include="System.Linq\IOrderedEnumerable_T.cs" />
+    <Compile Include="System.Linq\IOrderedQueryable.cs" />
+    <Compile Include="System.Linq\IOrderedQueryable_T.cs" />
+    <Compile Include="System.Linq\IQueryable.cs" />
+    <Compile Include="System.Linq\IQueryable_T.cs" />
+    <Compile Include="System.Linq\IQueryProvider.cs" />
     <Compile Include="System.Linq\Lookup.cs" />
     <Compile Include="System.Linq\OrderedEnumerable.cs" />
+    <Compile Include="System.Linq\OrderedParallelQuery.cs" />
     <Compile Include="System.Linq\OrderedSequence.cs" />
+    <Compile Include="System.Linq\ParallelEnumerable.cs" />
+    <Compile Include="System.Linq\ParallelExecutionMode.cs" />
+    <Compile Include="System.Linq\ParallelMergeOptions.cs" />
+    <Compile Include="System.Linq\ParallelQuery.cs" />
+    <Compile Include="System.Linq\Queryable.cs" />
+    <Compile Include="System.Linq\QueryableEnumerable.cs" />
+    <Compile Include="System.Linq\QueryableTransformer.cs" />
     <Compile Include="System.Linq\QuickSort.cs" />
     <Compile Include="System.Linq\SortContext.cs" />
     <Compile Include="System.Linq\SortDirection.cs" />
     <Compile Include="System.Linq\SortSequenceContext.cs" />
+    <Compile Include="System.Collections.ObjectModel\INotifyCollectionChanged.cs" />
+    <Compile Include="System.Collections.ObjectModel\NotifyCollectionChangedEventArgs.cs" />
+    <Compile Include="System.Collections.ObjectModel\ObservableCollection.cs" />
+    <Compile Include="System.Net.WebSockets\ClientWebSocket.cs" />
+    <Compile Include="System.Net.WebSockets\ClientWebSocketOptions.cs" />
+    <Compile Include="System.Net.WebSockets\HttpListenerWebSocketContext.cs" />
+    <Compile Include="System.Net.WebSockets\WebSocket.cs" />
+    <Compile Include="System.Net.WebSockets\WebSocketCloseStatus.cs" />
+    <Compile Include="System.Net.WebSockets\WebSocketContext.cs" />
+    <Compile Include="System.Net.WebSockets\WebSocketError.cs" />
+    <Compile Include="System.Net.WebSockets\WebSocketException.cs" />
+    <Compile Include="System.Net.WebSockets\WebSocketMessageType.cs" />
+    <Compile Include="System.Net.WebSockets\WebSocketReceiveResult.cs" />
+    <Compile Include="System.Net.WebSockets\WebSocketState.cs" />
+    <Compile Include="System.Numerics\BigInteger.cs" />
+    <Compile Include="System.Numerics\BigIntegerCalculator.AddSub.cs" />
+    <Compile Include="System.Numerics\BigIntegerCalculator.BitsBuffer.cs" />
+    <Compile Include="System.Numerics\BigIntegerCalculator.DivRem.cs" />
+    <Compile Include="System.Numerics\BigIntegerCalculator.FastReducer.cs" />
+    <Compile Include="System.Numerics\BigIntegerCalculator.GcdInv.cs" />
+    <Compile Include="System.Numerics\BigIntegerCalculator.PowMod.cs" />
+    <Compile Include="System.Numerics\BigIntegerCalculator.SquMul.cs" />
+    <Compile Include="System.Numerics\BigNumber.cs" />
+    <Compile Include="System.Numerics\FormatProvider.BigInteger.cs" />
+    <Compile Include="System.Numerics\FormatProvider.Number.cs" />
+    <Compile Include="System.Numerics\FormatProvider.NumberBuffer.cs" />
+    <Compile Include="System.Numerics\NumericHelpers.cs" />
     <Compile Include="System.Runtime.CompilerServices\AsyncStateMachineAttribute.cs" />
     <Compile Include="System.Runtime.CompilerServices\AsyncTaskMethodBuilder.cs" />
     <Compile Include="System.Runtime.CompilerServices\AsyncTaskMethodBuilder_T.cs" />
@@ -112,6 +299,8 @@
     <Compile Include="System.Runtime.CompilerServices\ConfiguredTaskAwaitable_T.cs" />
     <Compile Include="System.Runtime.CompilerServices\ExecutionScope.cs" />
     <Compile Include="System.Runtime.CompilerServices\ExtensionAttribute.cs" />
+    <Compile Include="System.Runtime.CompilerServices\HashPrimeNumbers.cs" />
+    <Compile Include="System.Runtime.CompilerServices\HashSet.cs" />
     <Compile Include="System.Runtime.CompilerServices\IAsyncStateMachine.cs" />
     <Compile Include="System.Runtime.CompilerServices\ICriticalNotifyCompletion.cs" />
     <Compile Include="System.Runtime.CompilerServices\INotifyCompletion.cs" />
@@ -124,10 +313,17 @@
     <Compile Include="System.Runtime.ExceptionServices\ExceptionDispatchInfo.cs" />
     <Compile Include="System.Runtime.ExceptionServices\FirstChanceExceptionEventArgs.cs" />
     <Compile Include="System.Runtime.ExceptionServices\HandleProcessCorruptedStateExceptionsAttribute.cs" />
+    <Compile Include="System.Runtime.Serialization\DataContractAttribute.cs" />
+    <Compile Include="System.Runtime.Serialization\DataMemberAttribute.cs" />
+    <Compile Include="System.Runtime.Serialization\IgnoreDataMemberAttribute.cs" />
+    <Compile Include="System.Runtime.Serialization\InvalidDataContractException.cs" />
+    <Compile Include="System.Runtime.Serialization\WeakReference_T.cs" />
+    <Compile Include="System.Security.Cryptography\Aes.cs" />
     <Compile Include="System.Threading.Tasks\ConcurrentExclusiveSchedulerPair.cs" />
     <Compile Include="System.Threading.Tasks\CyclicDeque.cs" />
     <Compile Include="System.Threading.Tasks\DecoupledTask.cs" />
     <Compile Include="System.Threading.Tasks\IConcurrentDeque.cs" />
+    <Compile Include="System.Threading.Tasks\IScheduler.cs" />
     <Compile Include="System.Threading.Tasks\Parallel.cs" />
     <Compile Include="System.Threading.Tasks\ParallelLoopResult.cs" />
     <Compile Include="System.Threading.Tasks\ParallelLoopState.cs" />
@@ -147,6 +343,7 @@
     <Compile Include="System.Threading.Tasks\TaskCreationOptions.cs" />
     <Compile Include="System.Threading.Tasks\TaskDebuggerView.cs" />
     <Compile Include="System.Threading.Tasks\TaskExceptionSlot.cs" />
+    <Compile Include="System.Threading.Tasks\TaskExtensions.cs" />
     <Compile Include="System.Threading.Tasks\TaskExtensionsImpl.cs" />
     <Compile Include="System.Threading.Tasks\TaskFactory.cs" />
     <Compile Include="System.Threading.Tasks\TaskFactory_T.cs" />
@@ -157,17 +354,44 @@
     <Compile Include="System.Threading.Tasks\TpScheduler.cs" />
     <Compile Include="System.Threading.Tasks\UnobservedTaskExceptionEventArgs.cs" />
     <Compile Include="System.Threading\AtomicBoolean.cs" />
+    <Compile Include="System.Threading\Barrier.cs" />
+    <Compile Include="System.Threading\BarrierPostPhaseException.cs" />
     <Compile Include="System.Threading\CancellationToken.cs" />
     <Compile Include="System.Threading\CancellationTokenRegistration.cs" />
     <Compile Include="System.Threading\CancellationTokenSource.cs" />
     <Compile Include="System.Threading\CountdownEvent.cs" />
+    <Compile Include="System.Threading\LazyInitializer.cs" />
+    <Compile Include="System.Threading\LazyThreadSafetyMode.cs" />
+    <Compile Include="System.Threading\LockRecursionException.cs" />
+    <Compile Include="System.Threading\LockRecursionPolicy.cs" />
     <Compile Include="System.Threading\ManualResetEventSlim.cs" />
+    <Compile Include="System.Threading\ReaderWriterLockSlim.cs" />
+    <Compile Include="System.Threading\ReaderWriterLockSlimExtensions.cs" />
+    <Compile Include="System.Threading\SemaphoreSlim.cs" />
+    <Compile Include="System.Threading\SpinLock.cs" />
     <Compile Include="System.Threading\SpinWait.cs" />
+    <Compile Include="System.Threading\ThreadEx.cs" />
+    <Compile Include="System.Threading\ThreadLocal.cs" />
+    <Compile Include="System.Threading\ThreadLockState.cs" />
+    <Compile Include="System.Threading\Volatile.cs" />
     <Compile Include="System.Threading\Watch.cs" />
     <Compile Include="System\AggregateException.cs" />
+    <Compile Include="System\Console.cs" />
+    <Compile Include="System\EnvironmentEx.cs" />
+    <Compile Include="System\InvalidTimeZoneException.cs" />
+    <Compile Include="System\IProgress.cs" />
+    <Compile Include="System\Lazy.cs" />
+    <Compile Include="System\LoaderOptimization.cs" />
+    <Compile Include="System\Memory.cs" />
+    <Compile Include="System\MonoTODOAttribute.cs" />
+    <Compile Include="System\OperationCanceledException2.cs" />
     <Compile Include="System\OperationCanceledExceptionExt.cs" />
-    <Compile Include="Tuple.cs" />
-    <Compile Include="Tuples.cs" />
+    <Compile Include="System\Progress.cs" />
+    <Compile Include="System\Span.cs" />
+    <Compile Include="System\TimeZoneInfo.cs" />
+    <Compile Include="System\TimeZoneNotFoundException.cs" />
+    <Compile Include="System\Tuple.cs" />
+    <Compile Include="System\Tuples.cs" />
     <Compile Include="System.Xml.Linq\Extensions.cs" />
     <Compile Include="System.Xml.Linq\LoadOptions.cs" />
     <Compile Include="System.Xml.Linq\ReaderOptions.cs" />
@@ -196,12 +420,17 @@
     <Compile Include="System.Xml.Linq\XStreamingElement.cs" />
     <Compile Include="System.Xml.Linq\XText.cs" />
     <Compile Include="System.Xml.Linq\XUtil.cs" />
+    <Compile Include="TypeDelegator.cs" />
+    <Compile Include="System.Reflection\TypeInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="mlib.snk" />
+    <None Include="System.Linq.Parallel.QueryNodes\ChangeLog" />
+    <None Include="System.Linq.Parallel\ChangeLog" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\..\..\Default.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
